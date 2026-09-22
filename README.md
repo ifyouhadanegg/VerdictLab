@@ -1,6 +1,6 @@
 # VerdictLab
 
-VerdictLab is a portfolio project that demonstrates how file-reputation signals can be turned into an explainable security verdict.
+VerdictLab demonstrates how file-reputation signals can be turned into an explainable security verdict.
 
 Current status: backend MVP implemented with synthetic data only.
 

@@ -1,0 +1,82 @@
+[
+  {
+    "metadata": {
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "file_name": "invoice_reader_setup.exe",
+      "file_type": "pe32_executable",
+      "file_size_bytes": 3287040,
+      "first_seen_days_ago": 1,
+      "prevalence_score": 2,
+      "signed": false
+    },
+    "detections": {
+      "malicious": 31,
+      "suspicious": 8,
+      "undetected": 2
+    },
+    "signals": {
+      "source_conflicts": false,
+      "telemetry_count": 87
+    }
+  },
+  {
+    "metadata": {
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "file_name": "contoso_printer_driver.cat",
+      "file_type": "catalog",
+      "file_size_bytes": 49152,
+      "first_seen_days_ago": 420,
+      "prevalence_score": 94,
+      "signed": true
+    },
+    "detections": {
+      "malicious": 0,
+      "suspicious": 0,
+      "undetected": 72
+    },
+    "signals": {
+      "source_conflicts": false,
+      "telemetry_count": 220
+    }
+  },
+  {
+    "metadata": {
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "file_name": "browser_extension_update.bin",
+      "file_type": "binary_blob",
+      "file_size_bytes": 812544,
+      "first_seen_days_ago": 22,
+      "prevalence_score": 48,
+      "signed": true
+    },
+    "detections": {
+      "malicious": 2,
+      "suspicious": 6,
+      "undetected": 35
+    },
+    "signals": {
+      "source_conflicts": true,
+      "telemetry_count": 56
+    }
+  },
+  {
+    "metadata": {
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "file_name": "plugin_cache_payload.dat",
+      "file_type": "data",
+      "file_size_bytes": 20480,
+      "first_seen_days_ago": 3,
+      "prevalence_score": 8,
+      "signed": false
+    },
+    "detections": {
+      "malicious": 0,
+      "suspicious": 0,
+      "undetected": 3
+    },
+    "signals": {
+      "source_conflicts": false,
+      "telemetry_count": 2
+    }
+  }
+]

@@ -27,16 +27,17 @@ class FileMetadata(BaseModel):
     sha256: str
     file_name: str
     file_type: str
-    file_size_bytes: int
-    first_seen_days_ago: int
-    prevalence_score: int = Field(ge=0, le=100)
-    signed: bool
+    file_size_bytes: int | None = Field(default=None, ge=0)
+    first_seen_days_ago: int | None = Field(default=None, ge=0)
+    prevalence_score: int | None = Field(default=None, ge=0, le=100)
+    signed: bool | None = None
 
 
 class DetectionCounts(BaseModel):
     malicious: int = Field(ge=0)
     suspicious: int = Field(ge=0)
     undetected: int = Field(ge=0)
+    harmless: int = Field(default=0, ge=0)
 
 
 class VerdictResult(BaseModel):
@@ -51,7 +52,7 @@ class VerdictResult(BaseModel):
 
 class FileLookupResponse(BaseModel):
     synthetic_data: bool = True
-    synthetic_notice: str = (
+    synthetic_notice: str | None = (
         "This response comes from bundled synthetic fixtures for MVP demonstration only."
     )
     metadata: FileMetadata

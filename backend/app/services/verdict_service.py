@@ -132,3 +132,50 @@ def calculate_verdict(record: dict[str, Any]) -> VerdictResult:
         rules_triggered=rules_triggered,
         explanation="The safest action is conservative review due to ambiguous evidence.",
     )
+
+
+def calculate_virustotal_verdict(
+    *, malicious: int, suspicious: int, analyzed_engines: int
+) -> VerdictResult:
+    """Return a conservative verdict based only on VirusTotal analysis counts."""
+    rules_triggered = [f"VirusTotal analyzed {analyzed_engines} engines."]
+
+    if malicious >= 10:
+        rules_triggered.append("High malicious detection count (>=10).")
+        return VerdictResult(
+            verdict=VerdictLabel.malicious,
+            recommendation=Recommendation.block,
+            confidence="high",
+            risk_score=95,
+            rules_triggered=rules_triggered,
+            explanation="Many VirusTotal engines identify this file as malicious.",
+        )
+
+    if malicious > 0 or suspicious > 0:
+        rules_triggered.append(
+            "VirusTotal reported malicious or suspicious detections."
+        )
+        return VerdictResult(
+            verdict=VerdictLabel.suspicious,
+            recommendation=Recommendation.detonate,
+            confidence="medium",
+            risk_score=min(90, 50 + malicious * 3 + suspicious * 2),
+            rules_triggered=rules_triggered,
+            explanation=(
+                "VirusTotal reports detections that warrant further analysis before"
+                " allowing this file."
+            ),
+        )
+
+    rules_triggered.append("No malicious or suspicious detections were reported.")
+    return VerdictResult(
+        verdict=VerdictLabel.unknown,
+        recommendation=Recommendation.human_review,
+        confidence="low",
+        risk_score=35,
+        rules_triggered=rules_triggered,
+        explanation=(
+            "No detections were reported, but this alone does not establish that the"
+            " file is safe. Use additional evidence and review before allowing it."
+        ),
+    )

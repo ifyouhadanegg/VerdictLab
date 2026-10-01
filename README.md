@@ -39,6 +39,20 @@ uvicorn app.main:app --reload
 - `GET /health`
 - `GET /api/v1/files/{sha256}`
 
+## VirusTotal Lookups
+
+Bundled synthetic examples continue to use local fixtures. Other valid SHA-256 hashes are looked up against VirusTotal's existing file reports; VerdictLab does not upload files. The VirusTotal API key stays on the backend.
+
+On Windows, set your key in the backend PowerShell terminal and start the API:
+
+```powershell
+$env:VIRUSTOTAL_API_KEY = "your-virustotal-api-key"
+cd backend
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+```
+
+If the backend is already running, stop it with `Ctrl+C` before setting the variable and restarting it. Without a key, synthetic lookups still work; other hashes return a configuration error. A hash is sent to VirusTotal when queried, so only check hashes you are authorized to share and follow VirusTotal's terms and rate limits.
+
 ## Important MVP Limits
 
 - SHA-256 lookup only (no file uploads).

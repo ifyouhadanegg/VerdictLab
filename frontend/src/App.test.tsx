@@ -38,7 +38,7 @@ describe('VerdictLab frontend', () => {
           prevalence_score: 50,
           signed: true,
         },
-        detections: { malicious: 1, suspicious: 2, undetected: 20 },
+        detections: { malicious: 1, suspicious: 2, undetected: 20, harmless: 0 },
         verdict: {
           verdict: 'suspicious',
           recommendation: 'Detonate',
@@ -66,7 +66,7 @@ describe('VerdictLab frontend', () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: false,
       status: 404,
-      json: async () => ({ detail: 'Synthetic sample not found' }),
+      json: async () => ({ detail: 'VirusTotal has no report for this hash' }),
     })
 
     vi.stubGlobal('fetch', fetchMock)
@@ -75,7 +75,7 @@ describe('VerdictLab frontend', () => {
     fillAndSubmit(validSha)
 
     await waitFor(() => {
-      expect(screen.getByText(/no synthetic result found/i)).toBeInTheDocument()
+      expect(screen.getByText(/no report for this hash/i)).toBeInTheDocument()
     })
 
     vi.unstubAllGlobals()

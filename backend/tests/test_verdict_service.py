@@ -2,8 +2,11 @@ from typing import Any
 
 import pytest
 
-from app.models.schemas import Recommendation
-from app.services.verdict_service import calculate_verdict
+from app.models.schemas import Recommendation, VerdictLabel
+from app.services.verdict_service import (
+    calculate_verdict,
+    calculate_virustotal_verdict,
+)
 
 
 def make_record(
@@ -110,3 +113,20 @@ def test_calculate_verdict_all_recommendation_categories(
     result = calculate_verdict(record)
     assert result.recommendation == expected
     assert result.rules_triggered
+
+
+def test_virustotal_verdict_blocks_many_malicious_detections() -> None:
+    result = calculate_virustotal_verdict(
+        malicious=12, suspicious=0, analyzed_engines=70
+    )
+    assert result.verdict == VerdictLabel.malicious
+    assert result.recommendation == Recommendation.block
+
+
+def test_virustotal_zero_detections_remain_unknown() -> None:
+    result = calculate_virustotal_verdict(
+        malicious=0, suspicious=0, analyzed_engines=70
+    )
+    assert result.verdict == VerdictLabel.unknown
+    assert result.recommendation == Recommendation.human_review
+    assert "does not establish" in result.explanation

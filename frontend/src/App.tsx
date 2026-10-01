@@ -30,7 +30,10 @@ const examples = [
 
 type ViewState = 'idle' | 'loading' | 'validationError' | 'apiError' | 'noResult' | 'result'
 
-function bytesToHumanReadable(bytes: number): string {
+function bytesToHumanReadable(bytes: number | null): string {
+  if (bytes === null) {
+    return 'Not reported'
+  }
   if (bytes < 1024) {
     return `${bytes} B`
   }
@@ -77,6 +80,7 @@ function App() {
     } catch (error) {
       setResult(null)
       if (error instanceof ApiClientError && error.status === 404) {
+        setApiMessage(error.message)
         setViewState('noResult')
         return
       }
@@ -109,12 +113,12 @@ function App() {
           <p className="eyebrow">Security Verdict Explorer</p>
           <h1>VerdictLab</h1>
           <p className="subtitle">
-            VerdictLab shows how synthetic file-reputation signals can produce an
-            explainable, conservative security verdict from a SHA-256 hash.
+            Explore synthetic examples or check a real SHA-256 hash against
+            VirusTotal for an explainable, conservative verdict.
           </p>
         </div>
         <p className="synthetic-chip" aria-label="Synthetic Data">
-          Synthetic Data Only
+          Synthetic + VirusTotal
         </p>
       </header>
 
@@ -137,7 +141,7 @@ function App() {
               aria-invalid={viewState === 'validationError'}
             />
             <p id="sha-help" className="field-help">
-              Input only, no file upload. Example: a3f1... (64 hex chars)
+              Hash only, no file upload. Real hashes are checked with VirusTotal.
             </p>
 
             <button type="submit" disabled={!canSubmit}>
@@ -175,7 +179,7 @@ function App() {
 
           {viewState === 'loading' && (
             <p className="state-note" role="status">
-              Loading synthetic reputation record...
+              Checking reputation sources...
             </p>
           )}
 
@@ -193,13 +197,20 @@ function App() {
 
           {viewState === 'noResult' && (
             <p className="state-note" role="status">
-              No synthetic result found for this hash.
+              {apiMessage || 'No report found for this hash.'}
             </p>
           )}
 
           {viewState === 'result' && currentResult && (
             <div className="result-stack">
-              <p className="synthetic-label">{currentResult.synthetic_notice}</p>
+              <p
+                className="source-label"
+                data-source={currentResult.synthetic_data ? 'synthetic' : 'virustotal'}
+              >
+                {currentResult.synthetic_data
+                  ? currentResult.synthetic_notice
+                  : 'Live reputation data from VirusTotal. No file was uploaded.'}
+              </p>
 
               <article className="verdict-card">
                 <p className="verdict-kicker">Verdict</p>
@@ -228,6 +239,10 @@ function App() {
                     <dt>Undetected</dt>
                     <dd>{currentResult.detections.undetected}</dd>
                   </div>
+                  <div>
+                    <dt>Harmless</dt>
+                    <dd>{currentResult.detections.harmless}</dd>
+                  </div>
                 </dl>
               </article>
 
@@ -236,11 +251,11 @@ function App() {
                 <dl>
                   <div>
                     <dt>File name</dt>
-                    <dd>{currentResult.metadata.file_name}</dd>
+                    <dd>{currentResult.metadata.file_name || 'Not reported'}</dd>
                   </div>
                   <div>
                     <dt>File type</dt>
-                    <dd>{currentResult.metadata.file_type}</dd>
+                    <dd>{currentResult.metadata.file_type || 'Not reported'}</dd>
                   </div>
                   <div>
                     <dt>Size</dt>
@@ -248,15 +263,29 @@ function App() {
                   </div>
                   <div>
                     <dt>Signed</dt>
-                    <dd>{currentResult.metadata.signed ? 'Yes' : 'No'}</dd>
+                    <dd>
+                      {currentResult.metadata.signed === null
+                        ? 'Not reported'
+                        : currentResult.metadata.signed
+                          ? 'Yes'
+                          : 'No'}
+                    </dd>
                   </div>
                   <div>
                     <dt>First seen</dt>
-                    <dd>{currentResult.metadata.first_seen_days_ago} days ago</dd>
+                    <dd>
+                      {currentResult.metadata.first_seen_days_ago === null
+                        ? 'Not reported'
+                        : `${currentResult.metadata.first_seen_days_ago} days ago`}
+                    </dd>
                   </div>
                   <div>
                     <dt>Prevalence score</dt>
-                    <dd>{currentResult.metadata.prevalence_score}/100</dd>
+                    <dd>
+                      {currentResult.metadata.prevalence_score === null
+                        ? 'Not reported'
+                        : `${currentResult.metadata.prevalence_score}/100`}
+                    </dd>
                   </div>
                 </dl>
               </article>

@@ -188,7 +188,7 @@ button:hover:not([disabled]) {
   gap: 0.75rem;
 }
 
-.synthetic-label {
+.source-label {
   margin: 0;
   font-size: 0.86rem;
   color: var(--color-warning-text);
@@ -196,6 +196,12 @@ button:hover:not([disabled]) {
   border: 1px solid var(--color-warning-border);
   border-radius: 8px;
   padding: 0.45rem 0.55rem;
+}
+
+.source-label[data-source='virustotal'] {
+  color: var(--color-ink);
+  background: var(--color-soft);
+  border-color: var(--color-border);
 }
 
 .verdict-card {
